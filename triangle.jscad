@@ -23,7 +23,7 @@ function motortab(params, offset) {
 	radius: [params.motor_width / 2 + params.gap,
 		 params.motor_width + params.gap],
 	roundradius: 5 + params.gap,
-	resolution: params.resolution})
+	resolution: params.resolution});
     result = result.subtract(CAG.roundedRectangle({
 	center: [0, params.motor_width / 2],
 	radius: [params.motor_width/2,
