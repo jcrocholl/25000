@@ -100,24 +100,15 @@ function panel(params) {
 	    .translate([params.frame_width / 2
 			+ params.gap / 2
 			- params.extrusion_thickness, 0, 0]));
-    result = result.subtract(
-	motortab(params,
-		 params.motor_width / 2
-		 + params.motor_offset)
-	    .rotateZ(90)
-	    .translate([-params.frame_width / 2
-			+ params.motor_width / 2
-			+ params.extrusion_thickness
-			+ params.motor_offset * 3, 0, 0]));
-    result = result.subtract(
-	motortab(params,
-		 params.motor_width / 2
-		 + params.motor_offset)
-	    .rotateZ(-90)
-	    .translate([params.frame_width / 2
-			- params.motor_width / 2
-			- params.extrusion_thickness
-			- params.motor_offset * 3, 0, 0]));
+    for (var s = -1; s < 2; s = s + 2) {
+        result = result.subtract(
+	    motortab(params,
+		     params.motor_width / 2 + params.motor_offset)
+	        .rotateZ(s * 90)
+	        .translate([s * (params.frame_width / 2
+			         - params.motor_width / 2
+			         - params.motor_offset), 0, 0]));
+    }
     return result;
 }
 
