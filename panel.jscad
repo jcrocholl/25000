@@ -11,7 +11,7 @@ function getParameterDefinitions() {
 	{name: 'motor_screw_grid', initial: 31, type: 'float', caption: 'Motor screw grid:', size: 5},
 	{name: 'motor_cutout_diameter', initial: 22, type: 'float', caption: 'Motor cutout dia:', size: 5},
 	{name: 'motor_width', initial: 42.2, type: 'float', caption: 'Motor width:', size: 5},
-	{name: 'motor_offset', initial: 30, type: 'float', caption: 'Motor to extrusion:', size: 5},
+	{name: 'motor_offset', initial: 13, type: 'float', caption: 'Motor to extrusion:', size: 5},
 	{name: 'roundness', initial: 7.5, type: 'float', caption: 'Roundness radius:', size: 5},
 	{name: 'resolution', initial: 24, type: 'float', caption: 'Resolution:', size: 5}
     ];
@@ -21,7 +21,7 @@ function bend(params, length) {
     var result = CAG.rectangle({
 	center: [20, 0],
 	radius: [params.gap / 4, params.gap / 4]});
-    for (var x = 20; x < length / 2 - 10; x = x + 40) {
+    for (var x = 15; x < length / 2 - 10; x = x + 30) {
 	result = result.union(CAG.rectangle({
 	    center: [x, 0],
 	    radius: [5, params.gap / 2]}))
@@ -34,23 +34,24 @@ function bend(params, length) {
 
 function motortab(params, offset) {
     var result = CAG.roundedRectangle({
-	center: [0, params.motor_width / 2],
+	center: [0, params.motor_width],
 	radius: [params.motor_width / 2 + params.gap,
 		 params.motor_width + params.gap],
 	roundradius: 5 + params.gap,
 	resolution: params.resolution});
-    result = result.subtract(CAG.roundedRectangle({
-	center: [0, params.motor_width / 2],
-	radius: [params.motor_width/2,
-		 params.motor_width],
-	roundradius: 5,
-	resolution: params.resolution}));
-    result = result.union(CAG.circle({
-	radius: params.motor_cutout_diameter / 2,
-	resolution: params.resolution * 4}));
+    result = result.subtract(
+        CAG.roundedRectangle({
+	    center: [0, params.motor_width],
+	    radius: [params.motor_width/2,
+		     params.motor_width],
+	    roundradius: 5,
+	    resolution: params.resolution})
+            .subtract(CAG.circle({
+	        radius: params.motor_cutout_diameter / 2,
+	        resolution: params.resolution * 4})));
     var grid = params.motor_screw_grid;
     for (var x = -grid / 2; x < grid; x = x + grid) {
-	for (var y = -grid / 2; y < grid; y = y + grid) {
+	for (var y = grid / 2; y < grid; y = y + grid) {
 	    result = result.union(CAG.circle({
 		center: [x, y], radius: params.motor_screw_diameter/2,
 		resolution: params.resolution}));
@@ -65,7 +66,7 @@ function motortab(params, offset) {
     return result;
 }
 
-function side(params) {
+function panel(params) {
     var result = CAG.roundedRectangle({
 	radius: [params.frame_width/2, params.frame_height/2],
 	roundradius: params.roundness, resolution: params.resolution});
@@ -135,6 +136,6 @@ function main(params) {
     params.frame_width = Math.sqrt(dx*dx + dy*dy)
 	+ 2 * params.extrusion_thickness;
 
-    var result = side(params);
+    var result = panel(params);
     return result;
 }
