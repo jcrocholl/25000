@@ -81,7 +81,7 @@ function flange(params) {
                     0]));
         // Cutout for timing belt.
         result = result.subtract(
-            CAG.roundedRectangle({radius: [20, 20],
+            CAG.roundedRectangle({radius: [22, 22],
                                   roundradius: params.roundness/2})
                 .translate([32 * s, 0, 0])
                 .rotateZ(30 * s)
