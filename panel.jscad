@@ -1,19 +1,19 @@
 function getParameterDefinitions() {
     return [
 	{name: 'frame_radius', initial: 180, type: 'float', caption: 'Center to extrusion:', size: 5},
-	{name: 'frame_height', initial: 100, type: 'float', caption: 'Panel height:', size: 5},
+	{name: 'frame_height', initial: 75, type: 'float', caption: 'Panel height:', size: 5},
 	{name: 'flange', initial: 20, type: 'float', caption: 'Flange:', size: 5},
 	{name: 'gap', initial: 2, type: 'float', caption: 'Gap:', size: 5},
-	{name: 'extrusion_width', initial: 40, type: 'float', caption: 'Extrusion width:', size: 5},
-	{name: 'extrusion_thickness', initial: 20, type: 'float', caption: 'Extrusion thickness:', size: 5},
-	{name: 'extrusion_screw_diameter', initial: 5, type: 'float', caption: 'Extrusion screw size:', size: 5},
+	{name: 'extrusion_width', initial: 15, type: 'float', caption: 'Extrusion width:', size: 5},
+	{name: 'extrusion_thickness', initial: 15, type: 'float', caption: 'Extrusion thickness:', size: 5},
+	{name: 'extrusion_screw_diameter', initial: 3, type: 'float', caption: 'Extrusion screw size:', size: 5},
 	{name: 'motor_screw_diameter', initial: 3, type: 'float', caption: 'Motor screw size:', size: 5},
 	{name: 'motor_screw_grid', initial: 31, type: 'float', caption: 'Motor screw grid:', size: 5},
 	{name: 'motor_cutout_diameter', initial: 22, type: 'float', caption: 'Motor cutout dia:', size: 5},
 	{name: 'motor_width', initial: 42.2, type: 'float', caption: 'Motor width:', size: 5},
 	{name: 'motor_offset', initial: 30, type: 'float', caption: 'Motor to extrusion:', size: 5},
-	{name: 'roundness', initial: 10, type: 'float', caption: 'Roundness radius:', size: 5},
-	{name: 'resolution', initial: 12, type: 'float', caption: 'Resolution:', size: 5}
+	{name: 'roundness', initial: 7.5, type: 'float', caption: 'Roundness radius:', size: 5},
+	{name: 'resolution', initial: 24, type: 'float', caption: 'Resolution:', size: 5}
     ];
 }
 
@@ -79,14 +79,13 @@ function side(params) {
 		resolution: params.resolution}));
 	}
     }
-    result = result.union(CAG.roundedRectangle({
-	radius: [params.frame_width/2 - params.extrusion_thickness,
-		 params.frame_height/2 + params.gap + params.flange],
-	roundradius: params.roundness,
-	resolution: params.resolution}));
-    result = result.subtract(
-	bend(params, params.frame_width - 2 * params.extrusion_thickness)
-	    .translate([0, params.frame_height / 2 + params.gap / 2, 0]));
+    result = result.union(
+        CAG.roundedRectangle({
+	    radius: [params.frame_width/2 - params.extrusion_thickness,
+		     params.gap + params.flange],
+	    roundradius: params.roundness,
+	    resolution: params.resolution})
+            .translate([0, -params.frame_height/2, 0]));
     result = result.subtract(
 	bend(params, params.frame_width - 2 * params.extrusion_thickness)
 	    .translate([0, -params.frame_height / 2 - params.gap / 2, 0]));
