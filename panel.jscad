@@ -13,7 +13,8 @@ function getParameterDefinitions() {
         {name: 'motor_width', initial: 42.2, type: 'float', caption: 'Motor width:', size: 5},
         {name: 'motor_offset', initial: 13, type: 'float', caption: 'Motor to extrusion:', size: 5},
         {name: 'roundness', initial: 7.5, type: 'float', caption: 'Roundness radius:', size: 5},
-        {name: 'resolution', initial: 24, type: 'float', caption: 'Resolution:', size: 5}
+        {name: 'resolution', initial: 24, type: 'float', caption: 'Resolution:', size: 5},
+        {name: 'count', initial: 1, type: 'int', caption: 'Count:', size: 5}
     ];
 }
 
@@ -34,17 +35,17 @@ function bend(params, length, step) {
 
 function motortab(params, offset) {
     var result = CAG.roundedRectangle({
-        center: [0, params.motor_width],
+        center: [0, params.motor_width*1.2],
         radius: [params.motor_width/2 + params.gap,
                  params.motor_width + params.gap],
-        roundradius: 5 + params.gap,
+        roundradius: params.roundness + params.gap,
         resolution: params.resolution});
     result = result.subtract(
         CAG.roundedRectangle({
-            center: [0, params.motor_width],
+            center: [0, params.motor_width*1.2],
             radius: [params.motor_width/2,
                      params.motor_width],
-            roundradius: 5,
+            roundradius: params.roundness,
             resolution: params.resolution})
             .subtract(CAG.circle({
                 radius: params.motor_cutout_diameter/2,
@@ -152,5 +153,11 @@ function main(params) {
         + 2 * params.extrusion_thickness;
 
     var result = panel(params);
+    for (var s = 0; s < params.count; s++) {
+        result = result.union(panel(params).translate(
+            [0, s * (params.frame_height
+                     + params.flange
+                     + 2*params.gap), 0]));
+    }
     return result;
 }
