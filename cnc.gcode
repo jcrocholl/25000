@@ -19,6 +19,7 @@ G2 I0 J-9.1 X141.6 Y42.5
 G1 Y-42.5
 G2 I-9.1 J0 X132.5 Y-51.6
 G1 X-141.6
+; Screw holes for extrusion
 G1 Z20
 G1 X-132 Y-43
 G1 Z0

@@ -90,7 +90,7 @@ linear(y=-yb)
 clockwise(x=xb, y=-ya, i=-r, j=0)
 linear(x=-xa)
 
-# Extrusion holes.
+print '; Screw holes for extrusion'
 for x, y in ((-1, -1), (-1, 1), (1, 1), (1, -1)):
     up()
     linear(x=x*xc, y=y*yc)
