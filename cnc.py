@@ -72,9 +72,9 @@ move('G92', x=-xa, y=-ya, z=0)
 linear(x=-xb, y=-ya)
 
 print '; Left wing (for vertical extrusion)'
-clockwise(x=-xa, y=-yb, r=r)
+clockwise(x=-xa, y=-yb, i=0, j=r)
 linear(y=yb)
-clockwise(x=-xb, y=ya, r=r)
+clockwise(x=-xb, y=ya, i=r, j=0)
 
 print '; Flange'
 linear(x=-xb, y=ya)
@@ -85,9 +85,9 @@ linear(y=ya)
 linear(x=xb)
 
 print '; Right wing (for vertical extrusion)'
-clockwise(x=xa, y=yb, r=r)
+clockwise(x=xa, y=yb, i=0, j=-r)
 linear(y=-yb)
-clockwise(x=xb, y=-ya, r=r)
+clockwise(x=xb, y=-ya, i=-r, j=0)
 linear(x=-xa)
 
 # Extrusion holes.
