@@ -31,7 +31,6 @@ def clockwise(**kwargs): move('G2', **kwargs)
 def up(): linear(z=20)
 def down(): linear(z=0)
 
-
 frame_radius = 150
 frame_height = 100
 frame_width = 250  # Extrusion to extrusion.
@@ -62,19 +61,20 @@ print >> sys.stderr, 'edge-to-edge', frame_width + 2*extrusion_thickness
 xa = frame_width/2 + extrusion_thickness + drill  # Outside
 xb = frame_width/2 + extrusion_thickness - roundness
 xc = frame_width/2 + extrusion_thickness/2  # Extrusion screws
-xe = frame_width/2 + drill  # Extrusion corner
-xf = frame_width/2 - 2*flange  # Flange corners
+xe = frame_width/2  # Extrusion corner
+xf = frame_width/2 - flange/tan(pi/12)/2  # 15 degrees
 xt = frame_width/2 - motor_bend
 xm = xt + motor_side
 xms = xm - motor_screw_grid/2
 xmc = xm - mc
 
-yf = frame_height/2 + flange + drill  # Top with flange
 ya = frame_height/2 + drill  # Top without flange
 yb = frame_height/2 - roundness
 yc = frame_height/2 - extrusion_thickness/2  # Extrusion screws
+yf = frame_height/2 + flange + drill  # Top with flange
+yg = frame_height/2 + flange/2 + drill  # Half flange
 yt = motor_width/2 + drill
-yt2 = yt + 6
+yt2 = yt + 10
 ym = 0
 yms = ym + motor_screw_grid/2
 ymc = ym + mc
@@ -116,9 +116,10 @@ clockwise(x=-xb, y=ya, i=r, j=0)
 print '; Flange'
 linear(x=-xb, y=ya)
 linear(x=-xe)
+linear(y=yg)
 linear(x=-xf, y=yf)
 linear(x=xf)
-linear(x=xe, y=ya)
+linear(x=xe, y=yg)
 linear(y=ya)
 linear(x=xb)
 
