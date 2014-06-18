@@ -47,7 +47,7 @@ motor_width = 42.2
 motor_offset = 30  # Motor face to extrusion.
 motor_side, motor_bend = rotate(0, motor_offset, 30)
 motor_side += extrusion_width/2
-mc, _ = rotate(motor_cutout_diameter/2 + drill, 0, 45)
+mc = motor_cutout_diameter/2 + drill
 
 thickness = 0.0478 * 25.4  # 18 gauge steel.
 roundness = 7.5
@@ -62,10 +62,11 @@ print >> sys.stderr, 'edge-to-edge', frame_width + 2*extrusion_thickness
 xa = frame_width/2 + extrusion_thickness + drill  # Outside
 xb = frame_width/2 + extrusion_thickness - roundness
 xc = frame_width/2 + extrusion_thickness/2  # Extrusion screws
-xf = frame_width/2 + drill  # Around flange
+xe = frame_width/2 + drill  # Extrusion corner
+xf = frame_width/2 - 2*flange  # Flange corners
 xt = frame_width/2 - motor_bend
 xm = xt + motor_side
-xs = xm - motor_screw_grid/2
+xms = xm - motor_screw_grid/2
 xmc = xm - mc
 
 yf = frame_height/2 + flange + drill  # Top with flange
@@ -73,8 +74,10 @@ ya = frame_height/2 + drill  # Top without flange
 yb = frame_height/2 - roundness
 yc = frame_height/2 - extrusion_thickness/2  # Extrusion screws
 yt = motor_width/2 + drill
-ys = motor_screw_grid/2
-ymc = mc
+yt2 = yt + 6
+ym = 0
+yms = ym + motor_screw_grid/2
+ymc = ym + mc
 
 r = roundness + drill
 
@@ -87,20 +90,20 @@ linear(x=-xa, y=-ya, z=0)
 print '; Screw holes for extrusion'
 for x in (-1, 1):
     up(); linear(x=x*xc, y=x*yc); down()
-    up(); linear(x=x*xs, y=x*ys); down()
-    up(); linear(x=x*xs, y=-1*x*ys); down()
+    up(); linear(x=x*xms, y=x*yms); down()
+    up(); linear(x=x*xms, y=-1*x*yms); down()
     up(); linear(x=x*xc, y=-1*x*yc); down()
 
 print '; Motor tabs'
 for x in (1, -1):
     up()
-    linear(x=xt*x, y=yt)
+    linear(x=x*xt, y=-x*yt2)
     down()
-    linear(x=xs*x)
-    linear(x=xm*x, y=ym)
-    clockwise(x=xm*x, y=-ym, i=-mc, j=mc)
-    linear(y=-yt)
-    linear(x=xt*x)
+    linear(x=x*xm, y=-x*yt)
+    linear(y=-x*ymc)
+    clockwise(y=x*ymc, r=mc)
+    linear(y=x*yt)
+    linear(x=x*xt, y=x*yt2)
 
 print '; Left wing (for vertical extrusion)'
 up()
@@ -112,9 +115,10 @@ clockwise(x=-xb, y=ya, i=r, j=0)
 
 print '; Flange'
 linear(x=-xb, y=ya)
-linear(x=-xf)
-linear(y=yf)
+linear(x=-xe)
+linear(x=-xf, y=yf)
 linear(x=xf)
+linear(x=xe, y=ya)
 linear(y=ya)
 linear(x=xb)
 
