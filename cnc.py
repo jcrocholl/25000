@@ -45,11 +45,17 @@ motor_screw_grid = 31
 motor_cutout_diameter = 22
 motor_width = 42.2
 motor_offset = 30  # Motor face to extrusion.
+motor_side, motor_bend = rotate(0, motor_offset, 30)
+motor_side += extrusion_width/2
+mc, _ = rotate(motor_cutout_diameter/2 + drill, 0, 45)
 
 thickness = 0.0478 * 25.4  # 18 gauge steel.
 roundness = 7.5
 
 print >> sys.stderr, 'thickness', thickness
+print >> sys.stderr, 'motor_bend', motor_bend
+print >> sys.stderr, 'motor_side', motor_side
+print >> sys.stderr, 'mc', mc
 print >> sys.stderr, 'extrusion-to-extrusion', frame_width
 print >> sys.stderr, 'edge-to-edge', frame_width + 2*extrusion_thickness
 
@@ -57,11 +63,18 @@ xa = frame_width/2 + extrusion_thickness + drill  # Outside
 xb = frame_width/2 + extrusion_thickness - roundness
 xc = frame_width/2 + extrusion_thickness/2  # Extrusion screws
 xf = frame_width/2 + drill  # Around flange
+xt = frame_width/2 - motor_bend
+xm = xt + motor_side
+xs = xm - motor_screw_grid/2
+xmc = xm - mc
 
 yf = frame_height/2 + flange + drill  # Top with flange
 ya = frame_height/2 + drill  # Top without flange
 yb = frame_height/2 - roundness
 yc = frame_height/2 - extrusion_thickness/2  # Extrusion screws
+yt = motor_width/2 + drill
+ys = motor_screw_grid/2
+ymc = mc
 
 r = roundness + drill
 
@@ -72,16 +85,27 @@ move('G92', x=-xa, y=-ya, z=0)
 linear(x=-xa, y=-ya, z=0)
 
 print '; Screw holes for extrusion'
-for x, y in ((-1, 1), (1, 1), (1, -1), (-1, -1)):
-    up()
-    linear(x=x*xc, y=y*yc)
-    down()
+for x in (-1, 1):
+    up(); linear(x=x*xc, y=x*yc); down()
+    up(); linear(x=x*xs, y=x*ys); down()
+    up(); linear(x=x*xs, y=-1*x*ys); down()
+    up(); linear(x=x*xc, y=-1*x*yc); down()
 
+print '; Motor tabs'
+for x in (1, -1):
+    up()
+    linear(x=xt*x, y=yt)
+    down()
+    linear(x=xs*x)
+    linear(x=xm*x, y=ym)
+    clockwise(x=xm*x, y=-ym, i=-mc, j=mc)
+    linear(y=-yt)
+    linear(x=xt*x)
+
+print '; Left wing (for vertical extrusion)'
 up()
 linear(x=-xb, y=-ya)
 down()
-
-print '; Left wing (for vertical extrusion)'
 clockwise(x=-xa, y=-yb, i=0, j=r)
 linear(y=yb)
 clockwise(x=-xb, y=ya, i=r, j=0)
