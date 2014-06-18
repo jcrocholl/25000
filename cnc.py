@@ -44,12 +44,12 @@ extrusion_thickness = 15
 motor_screw_grid = 31
 motor_cutout_diameter = 22
 motor_width = 42.2
-motor_offset = 50  # Motor face to extrusion.
+motor_offset = 30  # Motor face to extrusion.
 
-thickness = 2  # Thickness of sheet metal.
+thickness = 0.0478 * 25.4  # 18 gauge steel.
 roundness = 7.5
 
-
+print >> sys.stderr, 'thickness', thickness
 print >> sys.stderr, 'extrusion-to-extrusion', frame_width
 print >> sys.stderr, 'edge-to-edge', frame_width + 2*extrusion_thickness
 
@@ -69,7 +69,17 @@ print 'G17 ; Select XY plane for arcs'
 print 'G90 ; Absolute coordinates'
 print '; Start at bottom left corner'
 move('G92', x=-xa, y=-ya, z=0)
+linear(x=-xa, y=-ya, z=0)
+
+print '; Screw holes for extrusion'
+for x, y in ((-1, 1), (1, 1), (1, -1), (-1, -1)):
+    up()
+    linear(x=x*xc, y=y*yc)
+    down()
+
+up()
 linear(x=-xb, y=-ya)
+down()
 
 print '; Left wing (for vertical extrusion)'
 clockwise(x=-xa, y=-yb, i=0, j=r)
@@ -89,11 +99,3 @@ clockwise(x=xa, y=yb, i=0, j=-r)
 linear(y=-yb)
 clockwise(x=xb, y=-ya, i=-r, j=0)
 linear(x=-xa)
-
-print '; Screw holes for extrusion'
-for x, y in ((-1, -1), (-1, 1), (1, 1), (1, -1)):
-    up()
-    linear(x=x*xc, y=y*yc)
-    down()
-
-up()
