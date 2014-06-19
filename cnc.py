@@ -31,10 +31,15 @@ def clockwise(**kwargs): move('G2', **kwargs)
 def up(): linear(z=20)
 def down(): linear(z=0)
 
+def jump(**kwargs):
+    up()
+    linear(**kwargs)
+    down()
+
 frame_radius = 150
-frame_height = 100
+frame_height = 75
 frame_width = 250  # Extrusion to extrusion.
-flange = 20
+flange = 12
 drill = 1.6  # 1/16 inch radius.
 
 extrusion_width = 15
@@ -71,10 +76,10 @@ xmc = xm - mc
 ya = frame_height/2 + drill  # Top without flange
 yb = frame_height/2 - roundness
 yc = frame_height/2 - extrusion_thickness/2  # Extrusion screws
-yf = frame_height/2 + flange + drill  # Top with flange
+yf = frame_height/2 + flange + drill  # Top flange
 yg = frame_height/2 + flange/2 + drill  # Half flange
 yt = motor_width/2 + drill
-yt2 = yt + 10
+yt2 = yt + 4
 ym = 0
 yms = ym + motor_screw_grid/2
 ymc = ym + mc
@@ -84,21 +89,19 @@ r = roundness + drill
 print 'G17 ; Select XY plane for arcs'
 print 'G90 ; Absolute coordinates'
 print '; Start at bottom left corner'
-move('G92', x=-xa, y=-ya, z=0)
-linear(x=-xa, y=-ya, z=0)
+move('G92', x=-xa, y=-yg, z=0)
+linear(x=-xa, y=-yg, z=0)
 
 print '; Screw holes for extrusion'
 for x in (-1, 1):
-    up(); linear(x=x*xc, y=x*yc); down()
-    up(); linear(x=x*xms, y=x*yms); down()
-    up(); linear(x=x*xms, y=-1*x*yms); down()
-    up(); linear(x=x*xc, y=-1*x*yc); down()
+    jump(x=x*xc, y=x*yc)
+    jump(x=x*xms, y=x*yms)
+    jump(x=x*xms, y=-1*x*yms)
+    jump(x=x*xc, y=-1*x*yc)
 
 print '; Motor tabs'
 for x in (1, -1):
-    up()
-    linear(x=x*xt, y=-x*yt2)
-    down()
+    jump(x=x*xt, y=-x*yt2)
     linear(x=x*xm, y=-x*yt)
     linear(y=-x*ymc)
     clockwise(y=x*ymc, r=mc)
@@ -106,14 +109,12 @@ for x in (1, -1):
     linear(x=x*xt, y=x*yt2)
 
 print '; Left wing (for vertical extrusion)'
-up()
-linear(x=-xb, y=-ya)
-down()
+jump(x=-xb, y=-ya)
 clockwise(x=-xa, y=-yb, i=0, j=r)
 linear(y=yb)
 clockwise(x=-xb, y=ya, i=r, j=0)
 
-print '; Flange'
+print '; Top flange'
 linear(x=-xb, y=ya)
 linear(x=-xe)
 linear(y=yg)
@@ -127,4 +128,10 @@ print '; Right wing (for vertical extrusion)'
 clockwise(x=xa, y=yb, i=0, j=-r)
 linear(y=-yb)
 clockwise(x=xb, y=-ya, i=-r, j=0)
+
+print '; Bottom flange'
+linear(x=xe)
+linear(y=-yg)
+linear(x=-xe)
+linear(y=-ya)
 linear(x=-xa)
