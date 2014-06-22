@@ -16,15 +16,16 @@ def move(verb, **kwargs):
         words.append('%s%g' % (key.upper(), kwargs[key]))
     print ' '.join(words)
 
+def travel(**kwargs): move('G0', **kwargs)
 def linear(**kwargs): move('G1', **kwargs)
 def clockwise(**kwargs): move('G2', **kwargs)
 
-def up(): linear(z=20)
-def down(): linear(z=0)
+def up(): travel(z=8)
+def down(): linear(z=-2)
 
 def jump(**kwargs):
     up()
-    linear(**kwargs)
+    travel(**kwargs)
     down()
 
 frame_width = 200
@@ -143,3 +144,6 @@ print '; Extrusion pass-through and motor mounting plate'
 linear(x=-xa+20)
 clockwise(x=xa-20, i=xa-20, j=-yb)
 linear(x=xa, y=yb)
+
+print '; All done'
+up()
