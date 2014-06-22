@@ -41,7 +41,8 @@ motor_offset = 30  # Motor face to extrusion.
 motor_side, motor_bend = rotate(15, motor_offset, 30)
 motor_side += extrusion_width/2
 mc = motor_cutout_diameter/2 + drill
-clover = motor_screw_grid / 3
+nema23 = 47.14  # Mounting screws center-to-center
+clover = 6
 
 thickness = 0.0478 * 25.4  # 18 gauge steel.
 roundness = 7.5
@@ -57,17 +58,19 @@ xa = frame_width/2 + extrusion_thickness + drill  # Outside
 xb = frame_width/2 + extrusion_thickness - roundness
 # xc = frame_width/2 + extrusion_thickness/2  # Extrusion screws
 # xe = frame_width/2  # Extrusion corner
-# xt = frame_width/2 - motor_bend
-xms = motor_screw_grid/2
-xgs = motor_width/2 + 10
+xt = motor_width/2
+xms = motor_screw_grid/sqrt(2)
+xgs = nema23/2
 
 ya = frame_height/2 + drill  # Top without flange
 yb = frame_height/2 - roundness
 yc = frame_height/2 - extrusion_thickness/2  # Extrusion screws
-yt = motor_width/2 + drill
+yt = motor_width/2
 yt2 = yt + 4
 yms = xms
 ygs = xgs
+
+s2 = sqrt(2)
 
 print 'G17 ; Select XY plane for arcs'
 print 'G90 ; Absolute coordinates'
@@ -76,22 +79,37 @@ linear(x=0, y=0, z=0)
 
 print '; Gasket screw holes'
 for x in (-xgs, xgs):
-    jump(x=x, y=0)
-for y in (-ygs, ygs):
-    jump(x=0, y=y)
+    for y in (-x, x):
+        jump(x=x-1, y=y)
+        clockwise(i=1)
+
+#print '; 22mm dia cutout for reference'
+#jump(x=0, y=11)
+#clockwise(j=-11)
+
+#print '; NEMA17 square for reference'
+#jump(x=0, y=yt*s2)
+#linear(x=xt*s2, y=0)
+#linear(x=0, y=-yt*s2)
+#linear(x=-xt*s2, y=0)
+#linear(x=0, y=yt*s2)
 
 print '; Motor cutout clover leaf'
-jump(x=xms-clover, y=yms-1)
-linear(y=yms)
-clockwise(x=xms, y=yms-clover, i=clover)
-linear(y=-yms+clover)
-clockwise(x=xms-clover, y=-yms, j=-clover)
-linear(x=-xms+clover)
-clockwise(x=-xms, y=-yms+clover, i=-clover)
-linear(y=yms-clover)
-clockwise(x=-xms+clover, y=yms, j=clover)
-linear(x=xms-clover+1, y=yms)
-
+jump(x=-clover+1, y=yms-clover-1)
+linear(x=-clover, y=yms-clover)
+clockwise(x=clover, i=clover, j=clover)
+#clockwise(x=xms-clover, y=clover, r=mc)
+linear(x=xms-clover, y=clover, r=mc)
+clockwise(y=-clover, i=clover, j=-clover)
+#clockwise(x=clover, y=-yms+clover, r=mc)
+linear(x=clover, y=-yms+clover, r=mc)
+clockwise(x=-clover, i=-clover, j=-clover)
+#clockwise(x=-xms+clover, y=-clover, r=mc)
+linear(x=-xms+clover, y=-clover, r=mc)
+clockwise(y=clover, i=-clover, j=clover)
+#clockwise(x=-clover, y=yms-clover, r=mc)
+linear(x=-clover, y=yms-clover, r=mc)
+linear(x=-clover+1, y=yms-clover+1)
 
 #print '; Left wing (for vertical extrusion)'
 #jump(x=-xb, y=-ya)
