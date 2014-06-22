@@ -46,6 +46,7 @@ mc = motor_cutout_diameter/2 + drill
 clover = 6
 
 thickness = 0.0478 * 25.4  # 18 gauge steel.
+enable_perimeter = False
 
 print >> sys.stderr, 'thickness', thickness
 print >> sys.stderr, 'motor_bend', motor_bend
@@ -84,13 +85,14 @@ for x in (-xgs, xgs):
         jump(x=x, y=y)
         # clockwise(i=1)
 
-print '; Horizontal extrusion screw holes'
-for x in (xs1, xs2):
-    jump(x=x, y=ys)
-for x in (xs2, xs1, -xs1, -xs2):
-    jump(x=x, y=-ys)
-for x in (-xs2, -xs1):
-    jump(x=x, y=ys)
+if enable_perimeter:
+    print '; Horizontal extrusion screw holes'
+    for x in (xs1, xs2):
+        jump(x=x, y=ys)
+    for x in (xs2, xs1, -xs1, -xs2):
+        jump(x=x, y=-ys)
+    for x in (-xs2, -xs1):
+        jump(x=x, y=ys)
 
 #print '; 22mm dia cutout for reference'
 #jump(x=0, y=11)
@@ -103,47 +105,63 @@ for x in (-xs2, -xs1):
 #linear(x=-xt*s2, y=0)
 #linear(x=0, y=yt*s2)
 
-print '; Motor cutout clover leaf'
-jump(x=-clover+1, y=yms-clover-1)
-linear(x=-clover, y=yms-clover)
-clockwise(x=clover, i=clover, j=clover)
-#clockwise(x=xms-clover, y=clover, r=mc)
-linear(x=xms-clover, y=clover, r=mc)
-clockwise(y=-clover, i=clover, j=-clover)
-#clockwise(x=clover, y=-yms+clover, r=mc)
-linear(x=clover, y=-yms+clover, r=mc)
-clockwise(x=-clover, i=-clover, j=-clover)
-#clockwise(x=-xms+clover, y=-clover, r=mc)
-linear(x=-xms+clover, y=-clover, r=mc)
-clockwise(y=clover, i=-clover, j=clover)
-#clockwise(x=-clover, y=yms-clover, r=mc)
-linear(x=-clover, y=yms-clover, r=mc)
-linear(x=-clover+1, y=yms-clover+1)
+def clovercut(z):
+    up()
+    travel(x=-clover+1, y=yms-clover-1)
+    linear(z=z)
 
-print '; Right wing (outside horizontal extrusions)'
-jump(x=xa, y=yb)
-clockwise(x=xa+extrusion, y=ya, i=extrusion)
-linear(x=xb)
-linear(y=-ya)
-linear(x=xa+extrusion)
-clockwise(x=xa, y=-yb, j=extrusion)
+    print '; Motor cutout clover leaf'
+    linear(x=-clover, y=yms-clover)
+    clockwise(x=clover, i=clover, j=clover)
+    #clockwise(x=xms-clover, y=clover, r=mc)
+    linear(x=xms-clover, y=clover, r=mc)
+    clockwise(y=-clover, i=clover, j=-clover)
+    #clockwise(x=clover, y=-yms+clover, r=mc)
+    linear(x=clover, y=-yms+clover, r=mc)
+    clockwise(x=-clover, i=-clover, j=-clover)
+    #clockwise(x=-xms+clover, y=-clover, r=mc)
+    linear(x=-xms+clover, y=-clover, r=mc)
+    clockwise(y=clover, i=-clover, j=clover)
+    #clockwise(x=-clover, y=yms-clover, r=mc)
+    linear(x=-clover, y=yms-clover, r=mc)
+    linear(x=-clover+1, y=yms-clover+1)
 
-print '; Extrusion pass-through and motor mounting plate'
-linear(x=xa-20)
-clockwise(x=-xa+20, i=-xa+20, j=yb)
-linear(x=-xa, y=-yb)
+for z in (-1, -2.5):
+    clovercut(z)
 
-print '; Left wing (outside horizontal extrusions)'
-clockwise(x=-xa-extrusion, y=-ya, i=-extrusion)
-linear(x=-xb)
-linear(y=ya)
-linear(x=-xa-extrusion)
-clockwise(x=-xa, y=yb, j=-extrusion)
 
-print '; Extrusion pass-through and motor mounting plate'
-linear(x=-xa+20)
-clockwise(x=xa-20, i=xa-20, j=-yb)
-linear(x=xa, y=yb)
+def perimeter(z):
+    up()
+    travel(x=xa, y=yb)
+    linear(z=z)
+
+    print '; Right wing (outside horizontal extrusions)'
+    clockwise(x=xa+extrusion, y=ya, i=extrusion)
+    linear(x=xb)
+    linear(y=-ya)
+    linear(x=xa+extrusion)
+    clockwise(x=xa, y=-yb, j=extrusion)
+
+    print '; Extrusion pass-through and motor mounting plate'
+    linear(x=xa-20)
+    clockwise(x=-xa+20, i=-xa+20, j=yb)
+    linear(x=-xa, y=-yb)
+
+    print '; Left wing (outside horizontal extrusions)'
+    clockwise(x=-xa-extrusion, y=-ya, i=-extrusion)
+    linear(x=-xb)
+    linear(y=ya)
+    linear(x=-xa-extrusion)
+    clockwise(x=-xa, y=yb, j=-extrusion)
+
+    print '; Extrusion pass-through and motor mounting plate'
+    linear(x=-xa+20)
+    clockwise(x=xa-20, i=xa-20, j=-yb)
+    linear(x=xa, y=yb)
+
+if enable_perimeter:
+    for z in (-1, -2.5):
+        perimeter(z)
 
 print '; All done'
 up()
