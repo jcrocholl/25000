@@ -15,7 +15,7 @@ function getParameterDefinitions() {
 function motor(params) {
     var result = CAG.circle({
         radius: params.motor_cutout_diameter/2,
-        resolution: params.resolution * 4});
+        resolution: params.resolution*2});
     var grid = params.motor_screw_grid;
     for (var x = -grid/2; x < grid; x = x + grid) {
         for (var y = -grid/2; y < grid; y = y + grid) {
@@ -36,7 +36,7 @@ function panel(params) {
         result = result.subtract(CAG.circle({
                 center: [x, 0],
                 radius: params.frame_height/2 - params.extrusion_width,
-                resolution: 2*params.resolution}));
+                resolution: params.resolution*4}));
     }
     var offset_x = params.frame_width - params.extrusion_width;
     var offset_y = params.frame_height - params.extrusion_width;
