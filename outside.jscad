@@ -1,7 +1,8 @@
 function getParameterDefinitions() {
     return [
-        {name: 'frame_width', initial: 150, type: 'float', caption: 'Panel width:', size: 5},
         {name: 'frame_height', initial: 75, type: 'float', caption: 'Panel height:', size: 5},
+        {name: 'frame_width', initial: 150, type: 'float', caption: 'Panel width:', size: 5},
+        {name: 'middle_width', initial: 50, type: 'float', caption: 'Middle width:', size: 5},
         {name: 'extrusion_width', initial: 15, type: 'float', caption: 'Extrusion width:', size: 5},
         {name: 'extrusion_screw_diameter', initial: 3, type: 'float', caption: 'Extrusion screw size:', size: 5},
         {name: 'motor_screw_diameter', initial: 3, type: 'float', caption: 'Motor screw size:', size: 5},
@@ -57,6 +58,16 @@ function panel(params) {
                 resolution: params.resolution}));
             result = result.subtract(CAG.circle({
                 center: [x/2, y],
+                radius: params.extrusion_screw_diameter/2,
+                resolution: params.resolution}));
+        }
+    }
+    offset_x = params.middle_width;
+    offset_y = params.frame_height + 1;
+    for (y = -offset_y/2; y < offset_y; y = y + offset_y) {
+        for (x = -offset_x/2; x < offset_x; x = x + offset_x) {
+            result = result.subtract(CAG.circle({
+                center: [x, y],
                 radius: params.extrusion_screw_diameter/2,
                 resolution: params.resolution}));
         }
