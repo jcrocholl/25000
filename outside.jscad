@@ -1,11 +1,11 @@
 function getParameterDefinitions() {
     return [
-        {name: 'frame_height', initial: 75, type: 'float', caption: 'Panel height:', size: 5},
-        {name: 'frame_width', initial: 150, type: 'float', caption: 'Panel width:', size: 5},
-        {name: 'middle_width', initial: 50, type: 'float', caption: 'Middle width:', size: 5},
+        {name: 'frame_height', initial: 75, type: 'float', caption: 'Total height:', size: 5},
+        {name: 'frame_width', initial: 150, type: 'float', caption: 'Total width:', size: 5},
+        {name: 'middle_width', initial: 50, type: 'float', caption: 'Mid-section width:', size: 5},
         {name: 'extrusion_width', initial: 15, type: 'float', caption: 'Extrusion width:', size: 5},
-        {name: 'extrusion_screw_diameter', initial: 3, type: 'float', caption: 'Extrusion screw size:', size: 5},
-        {name: 'motor_screw_diameter', initial: 3, type: 'float', caption: 'Motor screw size:', size: 5},
+        {name: 'extrusion_screw_diameter', initial: 3.3, type: 'float', caption: 'Extrusion screw size:', size: 5},
+        {name: 'motor_screw_diameter', initial: 3.3, type: 'float', caption: 'Motor screw size:', size: 5},
         {name: 'motor_screw_grid', initial: 31, type: 'float', caption: 'Motor screw grid:', size: 5},
         {name: 'motor_cutout_diameter', initial: 22, type: 'float', caption: 'Motor cutout dia:', size: 5},
         {name: 'roundness', initial: 4, type: 'float', caption: 'Roundness radius:', size: 5},
