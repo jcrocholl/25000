@@ -61,6 +61,12 @@ function panel(params) {
                 radius: params.extrusion_screw_diameter/2,
                 resolution: params.resolution}));
         }
+        for (x = -15; x < 30; x = x + 30) {
+            result = result.subtract(CAG.circle({
+                center: [x, y],
+                radius: params.extrusion_screw_diameter/2,
+                resolution: params.resolution}));
+        }
     }
     // Dents for bending lines.
     offset_x = params.middle_width;
@@ -75,9 +81,9 @@ function panel(params) {
     }
     // M5 holes for 2040 extrusion (e.g. V-Slot).
     offset_x = 20;
-    offset_y = params.frame_height - 20;
+    offset_y = params.frame_height - 30;
     for (y = -offset_y/2; y < offset_y; y = y + offset_y) {
-        for (x = -offset_x/2; x < offset_x; x = x + offset_x) {
+        for (x = -offset_x/2; x < offset_x/2+1; x = x + offset_x/2) {
             result = result.subtract(CAG.circle({
                 center: [x, y],
                 radius: 5.5/2,
